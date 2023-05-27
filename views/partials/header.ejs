@@ -14,7 +14,7 @@
     <script src="../assets/libs/dataTables.bootstrap4.min.js"></script>
 
 
-    
+
 
 
 
@@ -24,6 +24,20 @@
     <nav class="py-1 navbar  navbar-light bg-danger">
 
         <a class="navbar-brand text-white ml-4" href="/"><b>Ships</b></a>
+        <a class="nav-link text-white justify-content-end" href="/employee/new"><b>Add new ship</b></a>
+        <!-- <a class="nav-link text-white justify-content-end" href="/employee/search"><b>Search</b></a> -->
+
+        <form action="/vessel" method="GET">
+          <div>
+
+          <input type="text" id = "searchform" name="name"  placeholder="Search"><button type="submit" class="btn btn-danger ">Search</button></a> 
+            
+     
+        </div>
+           
+        
+        </form>
+
 
 
         <div class="mr-5 justify-content-end">
@@ -33,6 +47,16 @@
                 <option value="">choose a table</option>
                 <option value="/clean">Clean Duplicates from the database</option>
             </select>
+
+
+
+
+
+
+
         </div>
-        
+
+
+
+
     </nav>

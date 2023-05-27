@@ -1,0 +1,21 @@
+<%- include('partials/header') -%>
+
+<div class="container mt-5 w-50">
+
+    <h2 class="mb-4">Update Ship Data</h2>
+
+    <form action="/edit/<%= ship.id %>?_method=PUT" method="POST">
+        <input type="hidden" name="_method" value="PUT">
+        
+        <input type="text" autocomplete="on"  value="<%= ship.name %>" name="name" class="form-control" >
+
+        <input type="text" value="<%= ship.remarks %>" name="remarks" class="form-control" >
+
+        <input type="text" value="<%= ship.operator %>" name="operator" class="form-control" >
+
+        <button type="submit" class="btn btn-danger btn-block mt-3">Update Ship</button>
+
+    </form>
+</div>
+
+<%- include('partials/footer') -%>

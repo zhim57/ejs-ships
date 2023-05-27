@@ -13,7 +13,7 @@
     >
       <thead>
         <tr>
-          <th>id</th>
+          <th>type</th>
           <th>Name</th>
           <th>email</th>
           <th>ism Man</th>
@@ -26,7 +26,7 @@
       </thead>
       <tfoot>
         <tr>
-          <th>id</th>
+          <th>Type</th>
           <th>Name</th>
           <th>email</th>
           <th>ism Man</th>
@@ -39,16 +39,17 @@
       </tfoot>
       <tbody>
 
-        <% ships.slice(0, 100).forEach((ship)=> { %>
+        <% ships.slice(0, 1000).forEach((ship)=> { %>
         <tr>
-          <td><%= ship.mysql_id %></td>
-          <td><%= ship.name %></td>
-          <td class="thick"><%= ship.remarks || "n/a" %> </td>
+          <td><%= ship.v_type %></td>
+          <td ><a href="/details/<%= ship.id %>"><%= ship.name %></a></td>  
+          <!-- class="thick" -->
+          <td ><%= ship.remarks.slice(0,36) || "n/a" %> </td>
           <td><%= ship.ismManagerName.slice(0,9) %></td>
           <td><%= ship.imo %></td>
           <td><%= ship.operator.slice(0,9) %></td>
           <td>
-            <a class="btn btn-primary" href="/edit/ <%= ship.id %>">Edit</a>
+            <a class="btn btn-primary" href="/edit/<%= ship.id %>">Edit</a>
           </td>
           <td>
             <form

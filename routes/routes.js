@@ -15,22 +15,95 @@ router.get("/", (req, res) => {
 
   Db_ship.find(searchQuery) //{"date": {$slice:14}
     .then((ships) => {
-    
-      let ships1 = [];
+      
       ships.forEach((ship) => {
-        let ship1 = ship;
         ship.remarks = cryptr.decrypt(ship.remarks);
-        ships1.push(ship1);
       });
-      req.flash("success_msg", "All went well, ships fetched");
-      res.render("index", { ships: ships1 });
+
+      req.flash(
+        "success_msg",
+        "All went well, " + ships.length + " ships fetched"
+      );
+      res.render("index", { ships: ships });
     })
     .catch((err) => {
       req.flash("error_msg", "ERROR: " + err);
       res.redirect("/");
     });
 });
+router.get('/vessel', (req,res)=> {
+  
+ let searchQuery = {name: new RegExp( req.query.name, "i")} ;
+  console.log(req.query.name)
+  console.log(searchQuery)
+  
 
+  Db_ship.find(searchQuery)
+      .then(ships => {
+        ships.forEach((ship) => {
+          ship.remarks = cryptr.decrypt(ship.remarks)
+        });
+        req.flash(
+          "success_msg",
+          "All went well, " + ships.length + " ships fetched"
+        );
+        res.render("index", { ships: ships });
+         
+      })
+      .catch(err => {
+          req.flash('error_msg', 'ERROR: '+err)
+          res.redirect('/');
+      });
+
+});
+router.get("/edit/:id", (req, res) => {
+  console.log(req.params.id);
+  id = req.params.id;
+  let searchQuery = { _id: id };
+
+  Db_ship.find(searchQuery)
+    .then((ship) => {
+      ship[0].remarks = cryptr.decrypt(ship[0].remarks);
+      res.render("edit", { ship: ship[0] });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "ERROR: " + err);
+      res.redirect("/");
+    });
+});
+router.get("/details/:id", (req, res) => {
+   
+    id = req.params.id;
+    let searchQuery1;
+    let others = [];
+    let ship = {};
+
+    let searchQuery = { _id: id };
+    Db_ship.find(searchQuery)
+    .then((ship1) => {
+      searchQuery1 = { operator: ship1[0].operator };
+      console.log(searchQuery1);
+
+      ship1[0].remarks = cryptr.decrypt(ship1[0].remarks);
+      ship = ship1[0];
+
+      Db_ship.find(searchQuery1)
+      .then((others1) => {
+ 
+        others1.slice(0, 15).forEach((other) => {
+          other.remarks = cryptr.decrypt(other.remarks);
+          others.push(other );
+        });
+
+        res.render("details", { data: { ship: ship, others: others } });
+      });
+    })
+  
+  .catch((err) => {
+    req.flash("error_msg", "ERROR: " + err);
+    res.redirect("/");
+  });
+  });
 
 // GET  ROUTES end  here
 
@@ -94,7 +167,28 @@ router.post("/api/filUpTheDateBaseShips/", (req, res) => {
       res.redirect("/");
     });
 });
-// POST ROUTES start here
+// POST ROUTES end here
+
+//put routes starts here
+
+router.put('/edit/:id', (req, res)=> {
+  let searchQuery = {_id : req.params.id};
+
+  Db_ship.updateOne(searchQuery, {$set: {
+      remarks : cryptr.encrypt(req.body.remarks),
+    
+  }})
+  .then(employee => {
+      req.flash('success_msg', 'Vessels email address updated successfully.')
+      res.redirect('/');
+  })
+  .catch(err => {
+      req.flash('error_msg', 'ERROR: '+err)
+      res.redirect('/');
+  });
+});
+
+//put routes ends here
 
 // DELETE routes start here
 

@@ -36,7 +36,8 @@ app.set("view engine", "ejs");
 const routes = require("./routes/routes.js")
 
 
-
+//middleware for  method override
+app.use(methodOverride('_method'));
 
 app.use(session({
   secret: "nodejs",

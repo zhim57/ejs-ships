@@ -1,0 +1,71 @@
+<%- include('partials/header') -%>
+
+    <div class="container mt-5 w-100">
+        <div class="row sm-12">
+
+            <div class="col sm-12 m-4">
+                <p>Vessel Type : <%= data.ship.v_type %>                </p>
+                <p>Vessel Name : <%= data.ship.name %>
+                </p>
+                <p>Operator: <%= data.ship.operator %>
+                </p>
+                <p>Call Sign: <%= data.ship.callSign %>
+                </p>
+                <p>Arrival port : <%= data.ship.arrPort %>
+                </p>
+                <p>Country : <%= data.ship.arrCountry %>
+                </p>
+                <p>ETA : <%= data.ship.eta %>
+                </p>
+            </p>
+         
+                
+
+            </div>
+            <div class="col sm-12 m-4">
+
+                <h2 class="mb-4">Update Ship Data</h2>
+
+                <form action="/edit/<%= data.ship.id %>?_method=PUT" method="POST">
+                    <input type="hidden" name="_method" value="PUT">
+
+                    <input type="text" autocomplete="on" value="<%= data.ship.name %>" name="name" class="form-control">
+
+                    <input type="text" value="<%= data.ship.remarks %>" name="remarks" class="form-control">
+
+                    <input type="text" value="<%= data.ship.operator %>" name="operator" class="form-control">
+
+                    <button type="submit" class="btn btn-danger btn-block mt-3">Update Ship</button>
+
+                </form>
+            </div>
+            <div class="col sm-12 m-4">
+
+                <h4 class="mb-4">Others in the fleet</h4>
+                <table >
+                    <thead>
+              
+                    </thead>
+                    <tfoot>
+                      
+                    </tfoot>
+                    <tbody>
+                        <% data.others.slice(0, 10).forEach((other)=> { %>
+                            <tr>
+                                <td>
+                                    <a href="/details/<%= other.id %>"><%= other.name %></a>
+                                </td>
+                                <td>
+                                    <%= other.remarks %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('partials/footer') -%>
