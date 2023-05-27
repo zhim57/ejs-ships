@@ -32,13 +32,13 @@ app.use(express.json());
 // Set ejs.
 app.set("view engine", "ejs");
 
-const shipRoutes = require("./ships_mdb/routes/ships.js")
-
 // Import routes and give the server access to them.
-var routes = require("./controllers/vesselsController");
+const routes = require("./routes/routes.js")
+
+
 
 app.use(routes);
-app.use(shipRoutes);
+
 app.use(session({
   secret: "nodejs",
   resave:true,
