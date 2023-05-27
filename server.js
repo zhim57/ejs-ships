@@ -7,7 +7,7 @@ const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
 const mongoose = require("mongoose");
-
+const methodOverride = require('method-override');
 
 var PORT = process.env.PORT || 8085;
 dotenv.config({path: './.env'})
@@ -37,7 +37,6 @@ const routes = require("./routes/routes.js")
 
 
 
-app.use(routes);
 
 app.use(session({
   secret: "nodejs",
@@ -45,12 +44,13 @@ app.use(session({
   saveUninitialized:true
 }));
 app.use(flash());
- 
+
 app.use((req,res, next) => { 
   res.locals.success_msg = req.flash(("success_msg")),
   res.locals.error_msg = req.flash(("error_msg")),
   next()
 });
+app.use(routes);
 
 // Start our server so that it can begin listening to client requests.
 app.listen(PORT, function() {
