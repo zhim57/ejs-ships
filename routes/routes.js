@@ -15,7 +15,6 @@ router.get("/", (req, res) => {
 
   Db_ship.find(searchQuery) //{"date": {$slice:14}
     .then((ships) => {
-      
       ships.forEach((ship) => {
         ship.remarks = cryptr.decrypt(ship.remarks);
       });
@@ -31,30 +30,23 @@ router.get("/", (req, res) => {
       res.redirect("/");
     });
 });
-router.get('/vessel', (req,res)=> {
-  
- let searchQuery = {name: new RegExp( req.query.name, "i")} ;
-  console.log(req.query.name)
-  console.log(searchQuery)
-  
-
+router.get("/vessel", (req, res) => {
+  let searchQuery = { name: new RegExp(req.query.name, "i") };
   Db_ship.find(searchQuery)
-      .then(ships => {
-        ships.forEach((ship) => {
-          ship.remarks = cryptr.decrypt(ship.remarks)
-        });
-        req.flash(
-          "success_msg",
-          "All went well, " + ships.length + " ships fetched"
-        );
-        res.render("index", { ships: ships });
-         
-      })
-      .catch(err => {
-          req.flash('error_msg', 'ERROR: '+err)
-          res.redirect('/');
+    .then((ships) => {
+      ships.forEach((ship) => {
+        ship.remarks = cryptr.decrypt(ship.remarks);
       });
-
+      req.flash(
+        "success_msg",
+        "All went well, " + ships.length + " ships fetched"
+      );
+      res.render("index", { ships: ships });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "ERROR: " + err);
+      res.redirect("/");
+    });
 });
 router.get("/edit/:id", (req, res) => {
   console.log(req.params.id);
@@ -72,43 +64,36 @@ router.get("/edit/:id", (req, res) => {
     });
 });
 router.get("/details/:id", (req, res) => {
-   
-    id = req.params.id;
-    let searchQuery1;
-    let others = [];
-    let ship = {};
+  id = req.params.id;
+  let searchQuery1;
+  let others = [];
+  let ship = {};
 
-    let searchQuery = { _id: id };
-    Db_ship.find(searchQuery)
+  let searchQuery = { _id: id };
+  Db_ship.find(searchQuery)
     .then((ship1) => {
       searchQuery1 = { operator: ship1[0].operator };
-      console.log(searchQuery1);
-
       ship1[0].remarks = cryptr.decrypt(ship1[0].remarks);
       ship = ship1[0];
 
-      Db_ship.find(searchQuery1)
-      .then((others1) => {
- 
-        others1.slice(0, 15).forEach((other) => {
+      Db_ship.find(searchQuery1).then((others1) => {
+        others1.slice(0, 20).forEach((other) => {
           other.remarks = cryptr.decrypt(other.remarks);
-          others.push(other );
+          others.push(other);
         });
 
         res.render("details", { data: { ship: ship, others: others } });
       });
     })
-  
-  .catch((err) => {
-    req.flash("error_msg", "ERROR: " + err);
-    res.redirect("/");
-  });
-  });
 
+    .catch((err) => {
+      req.flash("error_msg", "ERROR: " + err);
+      res.redirect("/");
+    });
+});
 // GET  ROUTES end  here
 
 // POST ROUTES start here
-
 router.post("/api/filUpTheDateBaseShips/", (req, res) => {
   let newObj = {
     date: "date of update",
@@ -170,44 +155,38 @@ router.post("/api/filUpTheDateBaseShips/", (req, res) => {
 // POST ROUTES end here
 
 //put routes starts here
+router.put("/edit/:id", (req, res) => {
+  let searchQuery = { _id: req.params.id };
 
-router.put('/edit/:id', (req, res)=> {
-  let searchQuery = {_id : req.params.id};
-
-  Db_ship.updateOne(searchQuery, {$set: {
-      remarks : cryptr.encrypt(req.body.remarks),
-    
-  }})
-  .then(employee => {
-      req.flash('success_msg', 'Vessels email address updated successfully.')
-      res.redirect('/');
+  Db_ship.updateOne(searchQuery, {
+    $set: {
+      remarks: cryptr.encrypt(req.body.remarks),
+    },
   })
-  .catch(err => {
-      req.flash('error_msg', 'ERROR: '+err)
-      res.redirect('/');
-  });
+    .then((vessel) => {
+      req.flash("success_msg", "Vessels email address updated successfully.");
+      res.redirect("/");
+    })
+    .catch((err) => {
+      req.flash("error_msg", "ERROR: " + err);
+      res.redirect("/");
+    });
 });
-
 //put routes ends here
 
 // DELETE routes start here
-
 router.delete("/delete/:id", function (req, res) {
-  let id = req.params.id;
+  let id = req.params.id + "1";
   let searchQuery = { _id: id };
 
-  Pickup.deleteOne(searchQuery)
-    .then((employee) => {
-      let dateJa = "";
-      var d = new Date();
-      dateJa +=
-        +(d.getHours() + 1) + ":" + d.getMinutes() + ":" + d.getSeconds();
-      req.flash("success_msg", "Pick up deleted Successfully :" + dateJa);
+  Db_ship.deleteOne(searchQuery)
+    .then((ship) => {
+      req.flash("success_msg", "Vessel Successfully deleted :");
       res.redirect("/");
     })
     .catch((err) => {
       res.json("error" + err);
-      req.flash("error_msg", "Error " + dateJ + " " + err);
+      req.flash("error_msg", "Error " + err);
     });
 });
 // DELETE routes end here
