@@ -1,0 +1,357 @@
+
+.jumbotron{
+  text-align: center;
+  background-image: url(/assets/images/cont-vsl1.jpg) ;
+  color: aliceblue;
+  font-size: 2rem;
+  padding:30px;
+
+  }
+
+  .load-imoObj{
+    background-color: rgb(239, 229, 229);
+    color:gainsboro;
+  }
+#searchF,
+#inputF {
+ background-color: rgb(201, 223, 223);
+ border-color: rgb(80, 80, 163);
+ border-radius: 10px;
+ border-width: 1px;
+ padding: 5px;
+ margin-bottom: 2px;
+ font-size: 1rem;
+  
+  /* background: #faebd7; */
+  }
+  .firstBlock{
+    min-height: 50px;
+    background-color: rgb(201, 231, 243);
+  }
+li {
+  padding: 5px;
+  margin: 5px;
+  
+  /* background: #faebd7; */
+  }
+
+.label {
+  font-weight: bold;
+  }
+
+.create-update-form {
+  padding: 5px;
+  margin: 5px;
+  /* background: aqua; */
+  }
+
+.form-group {
+  margin-bottom: 5px;
+
+
+  }
+  .click-link:hover{
+    background-color: aqua;
+
+    
+  }
+.leftB {
+  background-color: rgb(211, 231, 220);
+  font-size: 1rem ;
+  list-style-type: none;
+  }
+.salmon {
+  background-color: rgb(243, 224, 227);
+  font-size: 1rem ;
+  list-style-type: none;
+  }
+.skys {
+  background-color: rgb(201, 231, 243);
+  font-size: 1rem ;
+  list-style-type: none;
+  }
+  .schedules {
+  background-color: rgb(250, 192, 235);
+  font-size: 1rem ;
+  list-style-type: none;
+  }
+.green {
+  background-color: rgb(11, 82, 43);
+  color: rgb(203, 230, 130);
+  }
+.blue {
+  background-color: rgb(50, 68, 226);
+  color: rgb(203, 230, 130);
+  font-size: 0.7rem ;
+  font-weight: 400;
+  }
+.rightB {
+  background-color:lightcoral;
+  font-size: 1.4rem ;
+  font-weight: 600;
+  min-width: 33%;
+  height: 650px;
+  list-style-type: none;
+  }
+  .change-email{
+color: rgb(142, 231, 231);
+background-color: darkgreen;
+
+  }
+  .edit{
+color: rgb(1, 94, 1);
+font-size: 0.8rem ;
+font-weight: 300;
+
+
+  }
+  .edit:hover{
+    color: rgb(6, 31, 141);
+    font-size: 0.9rem ;
+    font-weight: 100;
+    cursor: pointer;
+  }
+  .change-email{
+color: aqua;
+background-color: darkgreen;
+
+  }
+  .delete-ship , .delete-email, .new-email1, .red{
+color: rgb(203, 230, 130);
+font-size: 0.8rem ;
+font-weight: 300;
+
+background-color: rgb(214, 15, 15);
+
+  }
+  .six_p{
+  
+    color: rgb(4, 59, 2);
+    font-size: 0.5rem ;
+    font-weight: 200;
+    
+    
+  }
+  .ten_p{
+    min-width: 390px;
+    font-size: 0.8rem ;
+    font-weight: 300;
+    
+    
+  }
+  .eight_p{    
+    font-size: 0.7rem ;
+    font-weight: 700;
+        
+  }
+  
+  .blue1{
+    color: rgb(23, 24, 23);
+    font-size: 0.7rem ;
+    font-weight: 400;
+background-color: rgb(220, 237, 238);
+
+  }
+  .blue1:hover{
+    color: rgb(13, 17, 2);
+background-color: rgb(245, 222, 222);
+
+  }
+  .build-list{
+color: rgb(203, 230, 130);
+background-color: rgb(27, 30, 163);
+
+  }
+
+
+.choiceB{
+
+  border: rgb(19, 235, 224) 1px;
+  border-radius: 5px;
+  background-color: lightgrey;
+  color: brown;
+  font-size: 1.2rem;
+  padding: 20px;
+  min-width: 33%;
+  height: 542px;
+  list-style-type: none;
+
+  }
+.but{
+  min-height:25px;
+  border-radius: 5px;
+ 
+  color:white;
+
+  }
+.choiceBout, 
+.leftBout, 
+.rightBout {
+  height: 750px;
+  background-color: lightgray;
+  
+  }
+ 
+.inline {
+  display: inline-flex;
+  }
+
+#ca,
+#ca-ing,
+#ca-ing-price,
+.ch15 {
+  width: 60px;
+  }
+
+#ca-ing-price {
+  width: 50px;
+  }
+
+  @media (max-width: 600px) {
+
+.leftBout, 
+.rightBout {
+  height: 500px;
+  background-color: lightgray;
+  width: 420px;
+  display:block;
+  align-content: center;
+  margin: auto;
+  }
+.choiceB,
+.rightB{
+  height:400px;
+  width: 380px;
+  display:block;
+  margin: auto;
+  }
+ .choiceBout{
+  height:480px;
+  width:420px;
+  margin: auto;
+  }
+  }
+  .delete-ingredient{
+    color: red;
+  }
+  
+  /* @media screen and (min-width: 992px) {
+  .{
+  
+  }
+  }
+  
+  @media (max-width: 640px) {
+  .{
+  
+  }
+
+  } */
+
+  [data-tooltip] {
+    display: inline-block;
+    position: relative;
+    cursor: help;
+    padding: 4px;
+}
+/* Tooltip styling */
+[data-tooltip]:before {
+    content: attr(data-tooltip);
+    display: none;
+    position: absolute;
+    background: #000;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 14px;
+    line-height: 1.4;
+    min-width: 100px;
+    text-align: center;
+    border-radius: 4px;
+}
+/* Dynamic horizontal centering */
+[data-tooltip-position="top"]:before,
+[data-tooltip-position="bottom"]:before {
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+/* Dynamic vertical centering */
+[data-tooltip-position="right"]:before,
+[data-tooltip-position="left"]:before {
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+[data-tooltip-position="top"]:before {
+    bottom: 100%;
+    margin-bottom: 6px;
+}
+[data-tooltip-position="right"]:before {
+    left: 100%;
+    margin-left: 6px;
+}
+[data-tooltip-position="bottom"]:before {
+    top: 100%;
+    margin-top: 6px;
+}
+[data-tooltip-position="left"]:before {
+    right: 100%;
+    margin-right: 6px;
+}
+
+/* Tooltip arrow styling/placement */
+[data-tooltip]:after {
+    content: '';
+    display: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+/* Dynamic horizontal centering for the tooltip */
+[data-tooltip-position="top"]:after,
+[data-tooltip-position="bottom"]:after {
+    left: 50%;
+    margin-left: -6px;
+}
+/* Dynamic vertical centering for the tooltip */
+[data-tooltip-position="right"]:after,
+[data-tooltip-position="left"]:after {
+    top: 50%;
+    margin-top: -6px;
+}
+[data-tooltip-position="top"]:after {
+    bottom: 100%;
+    border-width: 6px 6px 0;
+    border-top-color: #000;
+}
+[data-tooltip-position="right"]:after {
+    left: 100%;
+    border-width: 6px 6px 6px 0;
+    border-right-color: #000;
+}
+[data-tooltip-position="bottom"]:after {
+    top: 100%;
+    border-width: 0 6px 6px;
+    border-bottom-color: #000;
+}
+[data-tooltip-position="left"]:after {
+    right: 100%;
+    border-width: 6px 0 6px 6px;
+    border-left-color: #000;
+}
+/* Show the tooltip when hovering */
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+    display: block;
+    z-index: 50;
+}
+
+.h_hover:hover{
+  display: visible;
+}

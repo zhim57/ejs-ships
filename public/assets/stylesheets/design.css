@@ -1,0 +1,28 @@
+.form-control {
+	margin-top: 1.2rem;
+}
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+  
+th, td {
+	text-align: left;
+	padding: 8px;
+
+}
+  
+tr:nth-child(even) {
+	background-color: rgb(220, 243, 220);
+}
+td.normal {
+	font-weight: normal;
+  }
+  
+  td.thick {
+	font-weight: bold;
+  }
+  
+  td.thicker {
+	font-weight: 900;
+  }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tides</title>
+
+    <link rel="stylesheet" type="text/css" href="../assets/libs/bootstrap.css">
+    <link href="../assets/libs/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../assets/stylesheets/design.css">
+
+    <script src="../assets/libs/jquery.min.js"></script>
+    <script src="../assets/libs/dataTables.bootstrap4.min.css"></script>
+    <script src="../assets/libs/jquery.dataTables.min.js"></script>
+  
+
+
+
+
+    <!-- <link rel="stylesheet" type="text/css" href="../libs/bootstrap.css">
+    <link href="../libs/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/design.css">
+
+    <script src="../libs/jquery.min.js"></script>
+    <script src="../libs/jquery.dataTables.min.js"></script>
+    <script src="../libs/dataTables.bootstrap4.min.js"></script> -->
+
+</head>
+
+<body>
+    <nav class="py-1 navbar  navbar-light bg-danger"> 
+        <!-- navbar-expand-lg -->
+        <a class="navbar-brand text-white ml-4" href="/"><b>Tides</b></a>
+        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> -->
+
+        <!-- <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent"> -->
+
+            <div class="mr-5 justify-content-end">
+                <!-- <ul class="navbar-nav mr-auto mr-0"> -->
+                    <label class=" text-white" for="table-select"></label>
+                    <select id="table-select" onchange = "location = this.value;">
+                        <option value="">choose a table</option>
+                        <option value="/tide1">Anchorage SAILING 40+ &/or 800+ LOA </option>
+                        <option value="/tide2">ARRIVAL Anchorage 40+ &/or 800+ LOA</option>
+                        <option value="/hhkv">HHK Sailing Times</option>
+                        <option value="/b96_98v">Berts -96 & 98 strt SH -"in" and from berth "out"</option>
+                        <option value="/slackv">Slack Water Times</option>
+                        <option value="/sulcv" >SULCV in/out Newark & Elizabeth from/to SH</option>
+                        <option value="/cgt_bayonnev" >CGT_Bayonne</option>
+                        <option value="/sw_sailv" >PERTH AMBOY TERRITORY S/W - OUT-BOUND </option>
+                        <option value="/shcstv">Sandy Hook Channel start S/W (up to 29' anytime)</option>
+                        <option value="/tides">tides</option>
+                        <option value="/data" disabled>DATA Battery H and L and Sandy hook H</option>
+                        <option value="/data1" disabled>DATA Battery 2023 SH 2023</option>
+                    </select>
+
+                    <!-- <li class="nav-item">
+                        <a class="nav-link text-white" href="/tide1">Anch Sail >40' &or >800' LOA </b></a>
+                    </li>
+
+            </div>
+
+        <!-- </div> -->
+    </nav>
