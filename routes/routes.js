@@ -11,18 +11,18 @@ const cryptr = new Cryptr(process.env.SECRET, {
 
 // GET ROUTES start here
 router.get("/", (req, res) => {
-  let searchQuery = { mysql_id: { $gte: 1, $lte: 4 } };
+  let searchQuery = { mysql_id: { $gte: 1500, $lte: 2000 } };
 
   Db_ship.find(searchQuery) //{"date": {$slice:14}
     .then((ships) => {
-      console.log(ships);
+    
       let ships1 = [];
       ships.forEach((ship) => {
         let ship1 = ship;
         ship.remarks = cryptr.decrypt(ship.remarks);
         ships1.push(ship1);
       });
-      // req.flash("success_msg", "All went well, ships fetched");
+      req.flash("success_msg", "All went well, ships fetched");
       res.render("index", { ships: ships1 });
     })
     .catch((err) => {
@@ -30,6 +30,7 @@ router.get("/", (req, res) => {
       res.redirect("/");
     });
 });
+
 
 // GET  ROUTES end  here
 
@@ -94,6 +95,28 @@ router.post("/api/filUpTheDateBaseShips/", (req, res) => {
     });
 });
 // POST ROUTES start here
+
+// DELETE routes start here
+
+router.delete("/delete/:id", function (req, res) {
+  let id = req.params.id;
+  let searchQuery = { _id: id };
+
+  Pickup.deleteOne(searchQuery)
+    .then((employee) => {
+      let dateJa = "";
+      var d = new Date();
+      dateJa +=
+        +(d.getHours() + 1) + ":" + d.getMinutes() + ":" + d.getSeconds();
+      req.flash("success_msg", "Pick up deleted Successfully :" + dateJa);
+      res.redirect("/");
+    })
+    .catch((err) => {
+      res.json("error" + err);
+      req.flash("error_msg", "Error " + dateJ + " " + err);
+    });
+});
+// DELETE routes end here
 
 // Export routes for server.js to use.
 module.exports = router;

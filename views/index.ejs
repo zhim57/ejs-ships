@@ -13,40 +13,40 @@
     >
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Day</th>
-          <th>Battery</th>
-          <th>pre_ft</th>
-          <th>H/L</th>
-          <th>Open</th>
-          <th>Close</th>
-          <th>Open</th>
+          <th>id</th>
+          <th>Name</th>
+          <th>email</th>
+          <th>ism Man</th>
+          <th>imo</th>
+          <th>operator</th>
+          <th>edit</th>
+          <th>Delete</th>
          
         </tr>
       </thead>
       <tfoot>
         <tr>
-          <th>Date</th>
-          <th>Day</th>
-          <th>Battery</th>
-          <th>pre_ft</th>
-          <th>H/L</th>
-          <th>Open</th>
-          <th>Close</th>
-          <th>Open</th>
+          <th>id</th>
+          <th>Name</th>
+          <th>email</th>
+          <th>ism Man</th>
+          <th>imo</th>
+          <th>operator</th>
+          <th>edit</th>
+          <th>Delete</th>
          
         </tr>
       </tfoot>
       <tbody>
 
-        <% ships.slice(0, 4).forEach((ship)=> { %>
+        <% ships.slice(0, 100).forEach((ship)=> { %>
         <tr>
-          <td><%= ship.name %></td>
           <td><%= ship.mysql_id %></td>
-          <td><%= ship.ismManagerName %></td>
-          <td><%= ship.imo %></td>
-          <td><%= ship.operator %></td>
+          <td><%= ship.name %></td>
           <td class="thick"><%= ship.remarks || "n/a" %> </td>
+          <td><%= ship.ismManagerName.slice(0,9) %></td>
+          <td><%= ship.imo %></td>
+          <td><%= ship.operator.slice(0,9) %></td>
           <td>
             <a class="btn btn-primary" href="/edit/ <%= ship.id %>">Edit</a>
           </td>
