@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const flash = require("connect-flash");
+const sendEmail = require("../lib/sendmail.js");
+const createEmail = require("../lib/createemail.js");
 const Db_ship = require("../models/db_ship.js");
 const Cryptr = require("cryptr");
 const cryptr = new Cryptr(process.env.SECRET, {
@@ -84,6 +86,42 @@ router.get("/details/:id", (req, res) => {
 
         res.render("details", { data: { ship: ship, others: others } });
       });
+    })
+
+    .catch((err) => {
+      req.flash("error_msg", "ERROR: " + err);
+      res.redirect("/");
+    });
+});
+router.get("/sendmail/:id", (req, res) => {
+  id = req.params.id;
+  // let searchQuery1;
+    let searchQuery = { _id: id };
+  Db_ship.find(searchQuery)
+    .then((ship1) => {
+      
+      ship1[0].remarks = cryptr.decrypt(ship1[0].remarks);
+
+      let data ={id :  ship1[0].id, to: ship1[0].remarks ,name :ship1[0].name}; 
+
+      
+   let myObject=  createEmail (data,  (cb) => {
+
+console.log ("emailsent")
+console.log (JSON.stringify(myObject));
+
+
+     });
+
+      // Db_ship.find(searchQuery1).then((others1) => {
+      //   others1.slice(0, 20).forEach((other) => {
+      //     other.remarks = cryptr.decrypt(other.remarks);
+      //     others.push(other);
+      //   });
+
+        res.redirect("/" );
+        // { data: { ship: ship, others: others } }
+      // });
     })
 
     .catch((err) => {

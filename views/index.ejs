@@ -44,7 +44,7 @@
           <td><%= ship.v_type %></td>
           <td ><a href="/details/<%= ship.id %>"><%= ship.name %></a></td>  
           <!-- class="thick" -->
-          <td ><%= ship.remarks.slice(0,36) || "n/a" %> </td>
+          <td><a href="/sendmail/<%= ship.id %>"><%= ship.remarks.slice(0,36) || "n/a" %></a></td>
           <td><%= ship.ismManagerName.slice(0,9) %></td>
           <td><%= ship.imo %></td>
           <td><%= ship.operator.slice(0,9) %></td>
