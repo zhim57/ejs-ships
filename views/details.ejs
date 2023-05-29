@@ -17,6 +17,8 @@
                 </p>
                 <p>ETA : <%= data.ship.eta %>
                 </p>
+                <p>Message last sent : <%= data.ship.o_sent %>
+                </p>
             </p>
          
                 
@@ -56,7 +58,7 @@
                                     <a href="/details/<%= other.id %>"><%= other.name %></a>
                                 </td>
                                 <td>
-                                    <%= other.remarks %>
+                                    <a href="/sendmail/<%= other.id %>"><%= other.remarks.slice(0,36) || "n/a" %></a>
                                 </td>
                             </tr>
                             <% }) %>

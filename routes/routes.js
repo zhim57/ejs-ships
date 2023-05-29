@@ -1,8 +1,9 @@
+const dotenv = require("dotenv");
+dotenv.config({ path: "./.env" });
 const express = require("express");
 const router = express.Router();
-
 const flash = require("connect-flash");
-const sendEmail = require("../lib/sendmail.js");
+const nodemailer = require("nodemailer");
 const createEmail = require("../lib/createemail.js");
 const Db_ship = require("../models/db_ship.js");
 const Cryptr = require("cryptr");
@@ -95,40 +96,108 @@ router.get("/details/:id", (req, res) => {
 });
 router.get("/sendmail/:id", (req, res) => {
   id = req.params.id;
+  let msg = "";
   // let searchQuery1;
-    let searchQuery = { _id: id };
+  let searchQuery = { _id: id };
   Db_ship.find(searchQuery)
     .then((ship1) => {
-      
       ship1[0].remarks = cryptr.decrypt(ship1[0].remarks);
+      let data = { id: ship1[0].id, to: ship1[0].remarks, name: ship1[0].name };
 
-      let data ={id :  ship1[0].id, to: ship1[0].remarks ,name :ship1[0].name}; 
+      createEmail(data, (cb) => {
+        if (cb) {
+          let mailObject = cb;
+          let to = mailObject.to;
+          let id = mailObject.id;
+          const output = `<p>${mailObject.message}</p>`;
 
-      
-   let myObject=  createEmail (data,  (cb) => {
+          // create reusable transporter object using the default SMTP transport
+          let transporter = nodemailer.createTransport({
+            host: "smtp.mail.yahoo.com",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+              user: process.env.NODEMAILER_USER, // generated ethereal user
+              pass: process.env.NODEMAILER_PASSWORD, // generated ethereal password
+            },
+            tls: {
+              rejectUnauthorized: false,
+            },
+          });
 
-console.log ("emailsent")
-console.log (JSON.stringify(myObject));
+          let mailOptions = {
+            from: mailObject.name, // sender address
+            id: mailObject.id, // sender address
 
+            to: mailObject.to, // list of receivers
+            subject: mailObject.subject, // Subject line
+            text: mailObject.text, // plain text body
+            html: output, // html body,
+            attachments: mailObject.attachments,
+          };
 
-     });
+          // send mail with defined transport object
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              return console.log(error);
+            }
+            console.log("Message sent: %s", info.messageId);
+            console.log("Preview URL1: %s", info.accepted);
 
-      // Db_ship.find(searchQuery1).then((others1) => {
-      //   others1.slice(0, 20).forEach((other) => {
-      //     other.remarks = cryptr.decrypt(other.remarks);
-      //     others.push(other);
-      //   });
+            function addZero(i) {
+              if (i < 10) {
+                i = "0" + i;
+              }
+              return i;
+            }
 
-        res.redirect("/" );
-        // { data: { ship: ship, others: others } }
-      // });
+            function update(data1) {
+              console.log(data1.id);
+              let id = data1.id;
+              let o_sent1 = data1.sent;
+              let searchQuery = { _id: id };
+
+              Db_ship.updateOne(searchQuery, {
+                $set: { o_sent: o_sent1 },
+              })
+                .then((vessel) => {
+                  console.log("o_sent set successfully");
+                })
+                .catch((err) => {
+                  req.flash("error_msg", "ERROR: " + err);
+                });
+            }
+
+            const d = new Date();
+            let h = addZero(d.getHours());
+            let m = addZero(d.getMinutes());
+            let s = addZero(d.getSeconds());
+            let dateJa = h + ":" + m + ":" + s;
+
+            msg = dateJa + " email to " + to + " - sent";
+
+            let mo = addZero(d.getMonth() + 1);
+            let da = addZero(d.getDate());
+            let ye = d.getFullYear();
+            let dateSent = mo + "/" + da + "/" + ye;
+
+            let data1 = {};
+            data1.id = id;
+            data1.sent = dateSent;
+
+            update(data1);
+            req.flash("success_msg", " " + msg);
+            res.redirect("/details/"+ id);
+          });
+        }
+      });
     })
-
     .catch((err) => {
       req.flash("error_msg", "ERROR: " + err);
       res.redirect("/");
     });
 });
+
 // GET  ROUTES end  here
 
 // POST ROUTES start here
@@ -190,6 +259,7 @@ router.post("/api/filUpTheDateBaseShips/", (req, res) => {
       res.redirect("/");
     });
 });
+
 // POST ROUTES end here
 
 //put routes starts here
