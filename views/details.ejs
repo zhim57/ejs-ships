@@ -38,7 +38,7 @@
             </div>
             <div class="col sm-12 m-4">
 
-                <h2 class="mb-4">Update Ship Data</h2>
+                <h2 class="mb-4">Update Ship</h2>
 
                 
                 <form action="/edit/<%= data.ship.id %>?_method=PUT" method="POST">
@@ -49,8 +49,9 @@
                     <input type="text" value="<%= data.ship.remarks %>" name="remarks" class="form-control">
 
                     <input type="text" value="<%= data.ship.operator %>" name="operator" class="form-control">
+                    <input type="text" value="<%= data.ship.v_type %>" name="v_type" class="form-control">
 
-                    <button type="submit" class="btn btn-primary btn-block mt-3">Update Email</button>
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Update Info</button>
 
                 </form>
 

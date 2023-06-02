@@ -7,7 +7,9 @@ let vesselsCleaned = [];
 $(document).ready(function () {
   $("#dataTable").DataTable( {
     "pageLength": 500,
-        scrollY: 400});
+        scrollY: 400,
+        "order": [[ 0, 'desc' ], [ 1, 'asc' ]],
+      })
 
 
  

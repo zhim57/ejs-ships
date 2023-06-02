@@ -15,11 +15,11 @@ const cryptr = new Cryptr(process.env.SECRET, {
 
 // GET ROUTES start here
 router.get("/", (req, res) => {
-  let searchQuery = { mysql_id:{ $gte: 0, $lte:100 } };
+  let searchQuery = { mysql_id:{ $gte: 500, $lte:600 } };
 
   Db_ship.find(searchQuery) //{"date": {$slice:14}
     .then((ships) => {
-      ships.slice(0,100).forEach((ship) => {
+      ships.slice(0,200).forEach((ship) => {
         ship.remarks = cryptr.decrypt(ship.remarks);
       });
 
@@ -288,80 +288,7 @@ router.post("/api/filUpTheDateBaseShips/", (req, res) => {
       res.redirect("/");
     });
 });
-router.post("/api/filUpBigDb/", (req, res) => {
-  function addZero(i) {
-    if (i < 10) {
-      i = "0" + i;
-    }
-    return i;
-  }
 
-  const d = new Date();
-  let mo = addZero(d.getMonth() + 1);
-  let da = addZero(d.getDate());
-  let ye = d.getFullYear();
-  let date = mo + "/" + da + "/" + ye;
-
-  let newObj = {
-    date: date,
-    Tonnage: req.body.grossTonnage,
-    arrCountry: "",
-    arrPort: "",
-    beneficialOwnerId: req.body.beneficialOwner.id,
-    beneficialOwnerName: req.body.beneficialOwner.name,
-    bestContactId: req.body.bestContact.id,
-    bestContactName: req.body.bestContact.name,
-    buildYear: req.body.buildYear,
-    callSign: req.body.callSign,
-
-    ch_message: "",
-    commercialOperatorId: req.body.commercialOperator.id,
-    commercialOperatorName: req.body.commercialOperator.name,
-    country: "",
-    eta: "",
-    ex_name: "",
-    mysql_id: "",
-    imo: req.body.imo,
-    ismManagerId: req.body.ismManager.id,
-    ismManagerName: req.body.ismManager.name,
-    mmsi: req.body.mmsi,
-    mt_id: "",
-    name: req.body.name,
-    nominalOwnerId: req.body.nominalOwner.id,
-    nominalOwnerName: req.body.nominalOwner.name,
-    o_accepted: "",
-    o_sent: "",
-    oneCode: "",
-    sciCode: "",
-
-    operator: req.body.ismManager.name,
-
-    registeredOwnerId: req.body.registeredOwner.id,
-    registeredOwnerName: req.body.registeredOwner.name,
-    remarks: "",
-    technicalManagerId: req.body.technicalManager.id,
-    technicalManagerName: req.body.technicalManager.name,
-    thirdPartyOperatorId: req.body.thirdPartyOperator.id,
-    thirdPartyOperatorName: req.body.thirdPartyOperator.name,
-    v_description: req.body.vesselTypeAndSize,
-    v_type: req.body.type,
-    vesselFlag: req.body.flag.name,
-    vessel_id: "",
-    vrp_plan: "",
-    etaUpdated: "not",
-  };
-
-  Db_ship_big.create(newObj)
-    .then((db_ship) => {
-      // req.flash('success_msg', 'navigational data added to database successfully.')
-      res.redirect("/");
-      console.log("added to big DB");
-    })
-    .catch((err) => {
-      // req.flash('error_msg', 'ERROR: '+err)
-      res.redirect("/");
-    });
-});
 
 // POST ROUTES end here
 
@@ -372,6 +299,11 @@ router.put("/edit/:id", (req, res) => {
   Db_ship.updateOne(searchQuery, {
     $set: {
       remarks: cryptr.encrypt(req.body.remarks),
+      v_type: req.body.v_type,
+      name: req.body.name,
+      operator: req.body.operator,
+     
+
     },
   })
     .then((vessel) => {
