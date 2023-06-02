@@ -1,9 +1,21 @@
 <%- include('partials/header') -%>
 
     <div class="container mt-5 w-100">
+        <%- include('partials/messages') -%>
         <div class="row sm-12">
-
             <div class="col sm-12 m-4">
+                <form  action="/delete/<%= data.ship.id %>?_method=DELETE" method="POST">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit" class="btn btn-danger btn-block mt-3">
+                        Delete Vessel
+                    </button>
+                </form>
+                <p>Vessel mt_id : <%= data.ship.mt_id %>                </p>
+
+                <p>Vessel Imo: <%= data.ship.imo %>                </p>
+
+                
+                
                 <p>Vessel Type : <%= data.ship.v_type %>                </p>
                 <p>Vessel Name : <%= data.ship.name %>
                 </p>
@@ -19,15 +31,16 @@
                 </p>
                 <p>Message last sent : <%= data.ship.o_sent %>
                 </p>
-            </p>
-         
-                
+                </p>
+
+
 
             </div>
             <div class="col sm-12 m-4">
 
                 <h2 class="mb-4">Update Ship Data</h2>
 
+                
                 <form action="/edit/<%= data.ship.id %>?_method=PUT" method="POST">
                     <input type="hidden" name="_method" value="PUT">
 
@@ -37,28 +50,49 @@
 
                     <input type="text" value="<%= data.ship.operator %>" name="operator" class="form-control">
 
-                    <button type="submit" class="btn btn-danger btn-block mt-3">Update Ship</button>
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Update Email</button>
 
                 </form>
+
+                <form action="/updatefrombig/<%= data.ship.imo %>?_method=PUT" method="POST">
+                    <input type="hidden" name="_method" value="PUT">
+                
+
+
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Update Ship from Big</button>
+
+                </form>
+         
+                <form  action="/mt_update/<%= data.ship.id %>" method="POST">
+                   
+                    <button type="submit" class="btn btn-success btn-block mt-3">
+                        Update ETA
+                    </button>
+                </form>
+               
             </div>
             <div class="col sm-12 m-4">
 
                 <h4 class="mb-4">Others in the fleet</h4>
-                <table >
+                <table>
                     <thead>
-              
+
                     </thead>
                     <tfoot>
-                      
+
                     </tfoot>
                     <tbody>
                         <% data.others.slice(0, 10).forEach((other)=> { %>
                             <tr>
                                 <td>
-                                    <a href="/details/<%= other.id %>"><%= other.name %></a>
+                                    <a href="/details/<%= other.id %>">
+                                        <%= other.name %>
+                                    </a>
                                 </td>
                                 <td>
-                                    <a href="/sendmail/<%= other.id %>"><%= other.remarks.slice(0,36) || "n/a" %></a>
+                                    <a href="/sendmail/<%= other.id %>">
+                                        <%= other.remarks.slice(0,36) || "n/a" %>
+                                    </a>
                                 </td>
                             </tr>
                             <% }) %>

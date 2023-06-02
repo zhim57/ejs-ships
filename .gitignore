@@ -105,3 +105,7 @@ dist
 6-3-2021_json.json
 
 .env
+
+# Orphaned Code
+
+orphaned_code.js

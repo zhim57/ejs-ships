@@ -6,6 +6,7 @@ const flash = require("connect-flash");
 const nodemailer = require("nodemailer");
 const createEmail = require("../lib/createemail.js");
 const Db_ship = require("../models/db_ship.js");
+const Db_ship_big = require("../models/db_ship_big.js");
 const Cryptr = require("cryptr");
 const cryptr = new Cryptr(process.env.SECRET, {
   pbkdf2Iterations: Number(process.env.PBKDF2),
@@ -14,11 +15,11 @@ const cryptr = new Cryptr(process.env.SECRET, {
 
 // GET ROUTES start here
 router.get("/", (req, res) => {
-  let searchQuery = { mysql_id: { $gte: 1500, $lte: 2000 } };
+  let searchQuery = { mysql_id:{ $gte: 0, $lte:100 } };
 
   Db_ship.find(searchQuery) //{"date": {$slice:14}
     .then((ships) => {
-      ships.forEach((ship) => {
+      ships.slice(0,100).forEach((ship) => {
         ship.remarks = cryptr.decrypt(ship.remarks);
       });
 
@@ -50,6 +51,35 @@ router.get("/vessel", (req, res) => {
       req.flash("error_msg", "ERROR: " + err);
       res.redirect("/");
     });
+});
+router.get("/clean", (req, res) => {
+  for (let i = 1010; i < 1011; i++) {
+    let searchQuery = { mysql_id: i };
+    Db_ship.find(searchQuery)
+      .then((ships) => {
+        ships.slice(1, 4).forEach((ship) => {
+          let name = ship.name;
+          let searchQuery = { _id: ship._id };
+
+          Db_ship.deleteOne(searchQuery)
+            .then((ship) => {
+              console.log("deleted from db" + name);
+            })
+            .catch((err) => {
+              console.log("deleted from db- error" + err);
+            });
+        });
+        req.flash(
+          "success_msg",
+          "All went well, " + ships.length + " ships fetched"
+        );
+        // res.render("index", { ships: ships });
+      })
+      .catch((err) => {
+        req.flash("error_msg", "ERROR: " + err);
+        // res.redirect("/");
+      });
+  }
 });
 router.get("/edit/:id", (req, res) => {
   console.log(req.params.id);
@@ -144,13 +174,6 @@ router.get("/sendmail/:id", (req, res) => {
             console.log("Message sent: %s", info.messageId);
             console.log("Preview URL1: %s", info.accepted);
 
-            function addZero(i) {
-              if (i < 10) {
-                i = "0" + i;
-              }
-              return i;
-            }
-
             function update(data1) {
               console.log(data1.id);
               let id = data1.id;
@@ -166,6 +189,12 @@ router.get("/sendmail/:id", (req, res) => {
                 .catch((err) => {
                   req.flash("error_msg", "ERROR: " + err);
                 });
+            }
+            function addZero(i) {
+              if (i < 10) {
+                i = "0" + i;
+              }
+              return i;
             }
 
             const d = new Date();
@@ -187,7 +216,7 @@ router.get("/sendmail/:id", (req, res) => {
 
             update(data1);
             req.flash("success_msg", " " + msg);
-            res.redirect("/details/"+ id);
+            res.redirect("/details/" + id);
           });
         }
       });
@@ -259,6 +288,80 @@ router.post("/api/filUpTheDateBaseShips/", (req, res) => {
       res.redirect("/");
     });
 });
+router.post("/api/filUpBigDb/", (req, res) => {
+  function addZero(i) {
+    if (i < 10) {
+      i = "0" + i;
+    }
+    return i;
+  }
+
+  const d = new Date();
+  let mo = addZero(d.getMonth() + 1);
+  let da = addZero(d.getDate());
+  let ye = d.getFullYear();
+  let date = mo + "/" + da + "/" + ye;
+
+  let newObj = {
+    date: date,
+    Tonnage: req.body.grossTonnage,
+    arrCountry: "",
+    arrPort: "",
+    beneficialOwnerId: req.body.beneficialOwner.id,
+    beneficialOwnerName: req.body.beneficialOwner.name,
+    bestContactId: req.body.bestContact.id,
+    bestContactName: req.body.bestContact.name,
+    buildYear: req.body.buildYear,
+    callSign: req.body.callSign,
+
+    ch_message: "",
+    commercialOperatorId: req.body.commercialOperator.id,
+    commercialOperatorName: req.body.commercialOperator.name,
+    country: "",
+    eta: "",
+    ex_name: "",
+    mysql_id: "",
+    imo: req.body.imo,
+    ismManagerId: req.body.ismManager.id,
+    ismManagerName: req.body.ismManager.name,
+    mmsi: req.body.mmsi,
+    mt_id: "",
+    name: req.body.name,
+    nominalOwnerId: req.body.nominalOwner.id,
+    nominalOwnerName: req.body.nominalOwner.name,
+    o_accepted: "",
+    o_sent: "",
+    oneCode: "",
+    sciCode: "",
+
+    operator: req.body.ismManager.name,
+
+    registeredOwnerId: req.body.registeredOwner.id,
+    registeredOwnerName: req.body.registeredOwner.name,
+    remarks: "",
+    technicalManagerId: req.body.technicalManager.id,
+    technicalManagerName: req.body.technicalManager.name,
+    thirdPartyOperatorId: req.body.thirdPartyOperator.id,
+    thirdPartyOperatorName: req.body.thirdPartyOperator.name,
+    v_description: req.body.vesselTypeAndSize,
+    v_type: req.body.type,
+    vesselFlag: req.body.flag.name,
+    vessel_id: "",
+    vrp_plan: "",
+    etaUpdated: "not",
+  };
+
+  Db_ship_big.create(newObj)
+    .then((db_ship) => {
+      // req.flash('success_msg', 'navigational data added to database successfully.')
+      res.redirect("/");
+      console.log("added to big DB");
+    })
+    .catch((err) => {
+      // req.flash('error_msg', 'ERROR: '+err)
+      res.redirect("/");
+    });
+});
 
 // POST ROUTES end here
 
@@ -280,6 +383,105 @@ router.put("/edit/:id", (req, res) => {
       res.redirect("/");
     });
 });
+router.put("/updatefrombig/:imo", (req, res) => {
+  let searchQuery1 = { imo: req.params.imo };
+
+  Db_ship_big.find(searchQuery1)
+    .then((vessel1) => {
+
+      if (vessel1 ){
+
+        let vessel=vessel1[0];
+   
+         console.log(vessel.v_type);
+         let updateObject = {
+           date: vessel.date,
+           beneficialOwnerId: vessel.beneficialOwnerId,
+           beneficialOwnerName: vessel.beneficialOwnerName,
+           bestContactId: vessel.bestContactId,
+           bestContactName: vessel.bestContactName,
+           callSign: vessel.callSign,
+           commercialOperatorId: vessel.commercialOperatorId,
+           commercialOperatorName: vessel.commercialOperatorName,
+           ismManagerId: vessel.ismManagerId,
+           ismManagerName: vessel.ismManagerName,
+           name: vessel.name,
+           imo: vessel.imo,
+           nominalOwnerId: vessel.nominalOwnerId,
+           nominalOwnerName: vessel.nominalOwnerName,
+           operator: vessel.ismManagername,
+           registeredOwnerId: vessel.registeredOwnerId,
+           registeredOwnerName: vessel.registeredOwnerName,
+           technicalManagerId: vessel.technicalManagerId,
+           technicalManagerName: vessel.technicalManagerName,
+           thirdPartyOperatorId: vessel.thirdPartyOperatorId,
+           thirdPartyOperatorName: vessel.thirdPartyOperatorName,
+           v_description: vessel.v_description,
+           v_type: vessel.v_type,
+           vesselFlag: vessel.vesselFlag,
+         };
+   
+         let searchQuery = { imo: vessel.imo };
+   
+         Db_ship.updateOne(searchQuery, {
+           $set: {
+             date: vessel.date,
+             beneficialOwnerId: vessel.beneficialOwnerId,
+             beneficialOwnerName: vessel.beneficialOwnerName,
+             bestContactId: vessel.bestContactId,
+             bestContactName: vessel.bestContactName,
+             callSign: vessel.callSign,
+             commercialOperatorId: vessel.commercialOperatorId,
+             commercialOperatorName: vessel.commercialOperatorName,
+             ismManagerId: vessel.ismManagerId,
+             ismManagerName: vessel.ismManagerName,
+             name: vessel.name,
+             imo: vessel.imo,
+             nominalOwnerId: vessel.nominalOwnerId,
+             nominalOwnerName: vessel.nominalOwnerName,
+             operator: vessel.ismManagername,
+             registeredOwnerId: vessel.registeredOwnerId,
+             registeredOwnerName: vessel.registeredOwnerName,
+             technicalManagerId: vessel.technicalManagerId,
+             technicalManagerName: vessel.technicalManagerName,
+             thirdPartyOperatorId: vessel.thirdPartyOperatorId,
+             thirdPartyOperatorName: vessel.thirdPartyOperatorName,
+             v_description: vessel.v_description,
+             v_type: vessel.v_type,
+             vesselFlag: vessel.vesselFlag,
+           },
+         })
+           .then((updated) => {
+             req.flash(
+               "success_msg",
+               "Vessel updated successfully." + updateObject.name +"  -" + updateObject.v_type
+             );
+             console.log("updated the db");
+             res.redirect("/" );
+            })
+            .catch((err) => {
+              req.flash("error_msg", "ERROR: " + err);
+              res.redirect("/");
+            });
+          }
+          else {
+            req.flash(
+              "success_msg",
+              "Vessel not in big db." + updateObject.name
+            );
+             consle.log("vessel not in big db");
+            res.redirect("/");
+          }
+
+      // req.flash("success_msg", "Vessels email address updated successfully.");
+      // res.redirect("/");
+    })
+    .catch((err) => {
+      req.flash("error_msg", "ERROR: " + err);
+      res.redirect("/");
+    });
+});
+
 //put routes ends here
 
 // DELETE routes start here
