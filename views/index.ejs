@@ -1,70 +1,68 @@
 <%- include('partials/header') -%>
 
-<div class="container">
-  <%- include('partials/messages') -%>
+  <div class="container">
+    <%- include('partials/messages') -%>
 
+      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>type</th>
+            <th>Name</th>
+            <th>email</th>
+            <th>ism Man</th>
+            <th>imo</th>
+            <th>operator</th>
+            <th>Sent on</th>
+            <th>Db-></th>
+          </tr>
+        </thead>
 
+        <tbody>
+          <% ships.slice(0, 1000).forEach((ship)=> { %>
+            <tr>
+              <!-- <td><%= ship.mysql_id %></td> -->
+              <td>
+                <%= ship.v_type %>
+              </td>
+          
+              <td><a href="/details/<%= ship.id %>">
+                  <%= ship.name %>
+                </a></td>
+              <!-- class="thick" -->
+              <td class="sendMail">
+                <a href="/sendmail/<%= ship.id %>">
+                  <%= ship.remarks.slice(0,36) || "n/a" %>
+                </a>
+              </td>
+              <td>
+               
 
-  <table
-    class="table table-bordered"
-    id="dataTable"
-    width="100%"
-    cellspacing="0"
-  >
-    <thead>
-      <tr>
-        <th>type</th>
-        <th>from big</th>
-        <th>Name</th>
-        <th>email</th>
-        <th>ism Man</th>
-        <th>imo</th>
-        <th>operator</th>
-        <th>Sent on</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <th>Type</th>
-        <th>from big</th>
-        <th>Name</th>
-        <th>email</th>
-        <th>ism Man</th>
-        <th>imo</th>
-        <th>operator</th>
-        <th>Sent on</th>
-      </tr>
-    </tfoot>
-    <tbody>
-      <% ships.slice(0, 1000).forEach((ship)=> { %>
-      <tr>
-        <!-- <td><%= ship.mysql_id %></td> -->
-        <td><%= ship.v_type %></td>
-        <td>      <form action="/updatefrombig/<%= ship.imo %>?_method=PUT" method="POST">
-          <input type="hidden" name="_method" value="PUT">
-      
-
-
-          <button type="submit" class="btn btn-primary btn-block mt-3">Big Db</button>
-
-      </form></td>
-        <td><a href="/details/<%= ship.id %>"><%= ship.name %></a></td>
-        <!-- class="thick" -->
-        <td class="sendMail">
-          <a href="/sendmail/<%= ship.id %>"
-            ><%= ship.remarks.slice(0,36) || "n/a" %></a
-          >
-        </td>
-        <td><%= ship.ismManagerName.slice(0,9) %></td>
-        <td><%= ship.imo %></td>
-        <td><%= ship.operator.slice(0,9) %></td>
-        <!-- <td>
+                <%= (ship.ismManagerName || "n/a").slice(0,9) %>
+              </td>
+              <td>
+                <%= ship.imo %>
+              </td>
+              <td>
+                <a href="/byOperator/<%= ship.operator %>">
+                  <%= (ship.operator|| "n/a").slice(0,13) %>
+                </a>
+              
+              </td>
+              <!-- <td>
             <a class="btn btn-primary" href="/edit/<%= ship.id %>">Edit</a>
           </td> -->
-        <td><%= ship.o_sent.slice(0,11) %></td>
-      </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</div>
-<%- include('partials/footer') -%>
+              <td>
+                <%= (ship.o_sent || "n/a").slice(0,11) %>
+              </td>
+              <td>
+                <form action="/updatefrombig/<%= ship.imo %>?_method=PUT" method="POST">
+                  <input type="hidden" name="_method" value="PUT">
+                  <button type="submit" class="btn btn-primary btn-block mt-3">Big Db</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+  </div>
+  <%- include('partials/footer') -%>

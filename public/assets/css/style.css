@@ -206,6 +206,10 @@ background-color: rgb(27, 30, 163);
 #ca-ing-price {
   width: 50px;
   }
+  .px-10 {
+    font-size :10px
+
+}
 
   @media (max-width: 600px) {
 
@@ -354,4 +358,8 @@ background-color: rgb(27, 30, 163);
 
 .h_hover:hover{
   display: visible;
+}
+.px-10 {
+  font-size :10px
+
 }

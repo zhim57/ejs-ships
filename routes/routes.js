@@ -12,17 +12,39 @@ const cryptr = new Cryptr(process.env.SECRET, {
   pbkdf2Iterations: Number(process.env.PBKDF2),
   saltLength: Number(process.env.SALT),
 });
+var searchQuerySpare
 
 // GET ROUTES start here
 router.get("/", (req, res) => {
-  let searchQuery = { mysql_id:{ $gte: 500, $lte:600 } };
 
+  let searchQuery3 = { mysql_id:{ $gte: 600, $lte:700 } };
+let searchQuery = searchQuerySpare || searchQuery3;
   Db_ship.find(searchQuery) //{"date": {$slice:14}
     .then((ships) => {
       ships.slice(0,200).forEach((ship) => {
         ship.remarks = cryptr.decrypt(ship.remarks);
       });
 
+      req.flash(
+        "success_msg",
+        "All went well, " + ships.length + " ships fetched "
+      );
+      res.render("index", { ships: ships });
+    })
+    .catch((err) => {
+      req.flash("error_msg", "ERROR: " + err);
+      res.redirect("/");
+    });
+});
+router.get("/vessel", (req, res) => {
+  let searchQuery4 = { name: new RegExp(req.query.name, "i") };
+  let searchQuery = searchQuery4 || searchQuerySpare
+   searchQuerySpare = searchQuery
+  Db_ship.find(searchQuery)
+    .then((ships) => {
+      ships.forEach((ship) => {
+        ship.remarks = cryptr.decrypt(ship.remarks);
+      });
       req.flash(
         "success_msg",
         "All went well, " + ships.length + " ships fetched"
@@ -34,8 +56,11 @@ router.get("/", (req, res) => {
       res.redirect("/");
     });
 });
-router.get("/vessel", (req, res) => {
-  let searchQuery = { name: new RegExp(req.query.name, "i") };
+router.get("/byOperator/:operator", (req, res) => {
+
+  let searchQuery5 = { operator: req.params.operator };
+  let searchQuery = searchQuery5 || searchQuerySpare
+   searchQuerySpare = searchQuery
   Db_ship.find(searchQuery)
     .then((ships) => {
       ships.forEach((ship) => {
@@ -43,7 +68,7 @@ router.get("/vessel", (req, res) => {
       });
       req.flash(
         "success_msg",
-        "All went well, " + ships.length + " ships fetched"
+        "All went well, " + ships.length + " ships fetched , operator "+ req.params.operator
       );
       res.render("index", { ships: ships });
     })
@@ -81,7 +106,42 @@ router.get("/clean", (req, res) => {
       });
   }
 });
+router.get("/new", (req, res) => {
+ 
+      res.render("new");
+ 
+});
+// router.get("/clean", (req, res) => {
+//   for (let i = 1010; i < 1011; i++) {
+//     let searchQuery = { mysql_id: i };
+//     Db_ship.find(searchQuery)
+//       .then((ships) => {
+//         ships.slice(1, 4).forEach((ship) => {
+//           let name = ship.name;
+//           let searchQuery = { _id: ship._id };
+
+//           Db_ship.deleteOne(searchQuery)
+//             .then((ship) => {
+//               console.log("deleted from db" + name);
+//             })
+//             .catch((err) => {
+//               console.log("deleted from db- error" + err);
+//             });
+//         });
+//         req.flash(
+//           "success_msg",
+//           "All went well, " + ships.length + " ships fetched"
+//         );
+//         // res.render("index", { ships: ships });
+//       })
+//       .catch((err) => {
+//         req.flash("error_msg", "ERROR: " + err);
+//         // res.redirect("/");
+//       });
+//   }
+// });
 router.get("/edit/:id", (req, res) => {
+  
   console.log(req.params.id);
   id = req.params.id;
   let searchQuery = { _id: id };
@@ -105,15 +165,28 @@ router.get("/details/:id", (req, res) => {
   let searchQuery = { _id: id };
   Db_ship.find(searchQuery)
     .then((ship1) => {
-      searchQuery1 = { operator: ship1[0].operator };
+      if (ship1[0].operator !=""){
+
+        searchQuery1 = { operator: ship1[0].operator };
+      }else if (ship1[0].ismManagerName !="") {
+
+        searchQuery1 = { ismManagerName: ship1[0].ismManagerName};
+      }
       ship1[0].remarks = cryptr.decrypt(ship1[0].remarks);
       ship = ship1[0];
+      searchQuerySpare = {name: ship1[0].name}; 
 
       Db_ship.find(searchQuery1).then((others1) => {
-        others1.slice(0, 20).forEach((other) => {
-          other.remarks = cryptr.decrypt(other.remarks);
-          others.push(other);
-        });
+        if(others1[0]){
+
+          others1.slice(0, 25).forEach((other) => {
+            other.remarks = cryptr.decrypt(other.remarks);
+            others.push(other);
+          });
+        }
+        else if (!others1[0]){
+          others = [{name:"n/a", remarks:"n/a"},{name:"n/a", remarks:"n/a"}];
+        }
 
         res.render("details", { data: { ship: ship, others: others } });
       });
@@ -289,6 +362,114 @@ router.post("/api/filUpTheDateBaseShips/", (req, res) => {
     });
 });
 
+router.post("/api/addOneNewVessel/", (req, res) => {
+  searchQuerySpare = {name: req.body.name}; 
+  let newObj = {
+    date: "date of update",
+    callSign: req.body.callSign,
+    imo: req.body.imo,
+    v_type: req.body.v_type,
+       name: req.body.name,
+   operator: req.body.operator,
+      remarks: cryptr.encrypt(req.body.remarks),
+    etaUpdated: "not",
+  };
+console.log(newObj);
+let searchQuery2 = {callSign: req.body.callSign }
+Db_ship_big.find(searchQuery2).then(vessel1 =>{
+
+  if (vessel1[0]){
+    let vessel = vessel1[0]; 
+newObj ={
+  date: vessel.date,
+  Tonnage:vessel.Tonnage,
+  arrCountry:vessel.arrCountry,
+  arrPort:vessel.arrPort,
+  beneficialOwnerId:vessel.beneficialOwnerId,
+  beneficialOwnerName:vessel.beneficialOwnerName,
+  bestContactId:vessel.bestContactId,
+  bestContactName:vessel.bestContactName,
+  buildYear:vessel.buildYear,
+
+  ch_message:vessel.ch_message,
+  commercialOperatorId:vessel.commercialOperatorId,
+  commercialOperatorName:vessel.commercialOperatorName,
+  country:vessel.country,
+  eta:vessel.eta,
+ 
+  mysql_id:vessel.id,
+  imo:vessel.imo,
+  ismManagerId:vessel.ismManagerId,
+  ismManagerName:vessel.ismManagerName,
+  mmsi:vessel.mmsi,
+  mt_id:vessel.mt_id,
+  name:vessel.name,
+  nominalOwnerId:vessel.nominalOwnerId,
+  nominalOwnerName:vessel.nominalOwnerName,
+
+  operator:vessel.operator,
+  registeredOwnerId:vessel.registeredOwnerId,
+  registeredOwnerName:vessel.registeredOwnerName,
+ 
+  technicalManagerId:vessel.technicalManagerId,
+  technicalManagerName:vessel.technicalManagerName,
+  thirdPartyOperatorId:vessel.thirdPartyOperatorId,
+  thirdPartyOperatorName:vessel.thirdPartyOperatorName,
+  v_description:vessel.v_description,
+  v_type:vessel.v_type,
+  vesselFlag:vessel.vesselFlag,
+
+  etaUpdated: "not",
+
+
+
+
+
+
+};
+
+
+Db_ship.create(newObj)
+.then((db_ship) => {
+  req.flash('success_msg', 'The new vesel updated and added to the db '+vessel.name)
+  res.redirect("/");
+  console.log("new ship added to DB");
+})
+.catch((err) => {
+  // req.flash('error_msg', 'ERROR: '+err)
+  res.redirect("/");
+});
+
+  }
+  else{
+    console.log("vessel not found in the big DB created place holder")
+
+    Db_ship.create(newObj)
+.then((db_ship) => {
+  req.flash('success_msg', 'The new vesel updated and added to the db '+newObj.name)
+  res.redirect("/");
+  console.log("new ship added to DB");
+})
+.catch((err) => {
+  // req.flash('error_msg', 'ERROR: '+err)
+  res.redirect("/");
+});
+  }
+
+
+}).catch((err)=>{
+
+ // req.flash('error_msg', 'ERROR: '+err)
+      res.redirect("/");
+    });
+
+
+
+
+
+
+});
+
 
 // POST ROUTES end here
 
@@ -341,7 +522,7 @@ router.put("/updatefrombig/:imo", (req, res) => {
            imo: vessel.imo,
            nominalOwnerId: vessel.nominalOwnerId,
            nominalOwnerName: vessel.nominalOwnerName,
-           operator: vessel.ismManagername,
+           operator: vessel.operator || vessel.ismManagername,
            registeredOwnerId: vessel.registeredOwnerId,
            registeredOwnerName: vessel.registeredOwnerName,
            technicalManagerId: vessel.technicalManagerId,
@@ -371,7 +552,7 @@ router.put("/updatefrombig/:imo", (req, res) => {
              imo: vessel.imo,
              nominalOwnerId: vessel.nominalOwnerId,
              nominalOwnerName: vessel.nominalOwnerName,
-             operator: vessel.ismManagername,
+             operator: updateObject.operator,
              registeredOwnerId: vessel.registeredOwnerId,
              registeredOwnerName: vessel.registeredOwnerName,
              technicalManagerId: vessel.technicalManagerId,
@@ -418,7 +599,7 @@ router.put("/updatefrombig/:imo", (req, res) => {
 
 // DELETE routes start here
 router.delete("/delete/:id", function (req, res) {
-  let id = req.params.id + "1";
+  let id = req.params.id;
   let searchQuery = { _id: id };
 
   Db_ship.deleteOne(searchQuery)

@@ -72,21 +72,26 @@
                 </form>
                
             </div>
-            <div class="col sm-12 m-4">
+            <div class="col sm-12 m-4 ">
 
                 <h4 class="mb-4">Others in the fleet</h4>
-                <table>
+                <table style : {font-size:0.5 rem}>
                     <thead>
-
+                        <td>
+                            name_of_vessel
+                        </td>
+                        <td>
+                            email_address_of_vessel
+                        </td>
                     </thead>
                     <tfoot>
 
                     </tfoot>
                     <tbody>
-                        <% data.others.slice(0, 10).forEach((other)=> { %>
-                            <tr>
+                        <% data.others.slice(0, 25).forEach((other)=> { %>
+                            <tr class="px-12">
                                 <td>
-                                    <a href="/details/<%= other.id %>">
+                                    <a  href="/details/<%= other.id %>">
                                         <%= other.name %>
                                     </a>
                                 </td>

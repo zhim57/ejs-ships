@@ -8938,7 +8938,10 @@ a.bg-dark:hover {
         margin-bottom: auto !important
     }
 }
+.px-10 {
+    font-size :10px
 
+}
 .text-justify {
     text-align: justify !important
 }
