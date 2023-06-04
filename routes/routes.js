@@ -37,24 +37,40 @@ let searchQuery = searchQuerySpare || searchQuery3;
     });
 });
 router.get("/vessel", (req, res) => {
+  let searchQuery ={};
+if(req.query.ism === "yes"){
+
+  let searchQuery4 = { ismManagerName: new RegExp(req.query.name, "i") };
+  searchQuery  = searchQuery4 || searchQuerySpare
+
+}
+else if ( req.query.operator === "yes"){
+
+  let searchQuery4 = { operator: new RegExp(req.query.name, "i") };
+   searchQuery = searchQuery4 || searchQuerySpare
+}
+else{
+
   let searchQuery4 = { name: new RegExp(req.query.name, "i") };
-  let searchQuery = searchQuery4 || searchQuerySpare
-   searchQuerySpare = searchQuery
-  Db_ship.find(searchQuery)
-    .then((ships) => {
-      ships.forEach((ship) => {
-        ship.remarks = cryptr.decrypt(ship.remarks);
-      });
-      req.flash(
-        "success_msg",
-        "All went well, " + ships.length + " ships fetched"
-      );
-      res.render("index", { ships: ships });
-    })
-    .catch((err) => {
-      req.flash("error_msg", "ERROR: " + err);
-      res.redirect("/");
-    });
+   searchQuery = searchQuery4 || searchQuerySpare
+}
+searchQuerySpare = searchQuery
+Db_ship.find(searchQuery)
+ .then((ships) => {
+   ships.forEach((ship) => {
+     ship.remarks = cryptr.decrypt(ship.remarks);
+   });
+   req.flash(
+     "success_msg",
+     "All went well, " + ships.length + " ships fetched"
+   );
+   res.render("index", { ships: ships });
+ })
+ .catch((err) => {
+   req.flash("error_msg", "ERROR: " + err);
+   res.redirect("/");
+ });
+
 });
 router.get("/byOperator/:operator", (req, res) => {
 

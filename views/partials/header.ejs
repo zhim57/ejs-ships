@@ -24,12 +24,23 @@
     <nav class="py-1 navbar  navbar-light bg-danger">
 
         <a class="navbar-brand text-white ml-4" href="/"><b>Ships</b></a>
-        <a class="nav-link text-white justify-content-end" href="/employee/new"><b>Add new ship</b></a>
+        <!-- <a class="nav-link text-white justify-content-end" href="/employee/new"><b>Add new ship</b></a> -->
         <!-- <a class="nav-link text-white justify-content-end" href="/employee/search"><b>Search</b></a> -->
 
-        <form action="/vessel" method="GET">
-          <div>
+        <form style="display: flex;" class="text-white" action="/vessel" method="GET">
 
+         
+
+
+
+           
+            <input type="checkbox" id="ism" name="ism" value="yes">
+            <label for="ism"> ism</label><br>
+           
+            <input type="checkbox" id="operator" name="operator" value="yes"/>
+            <label for="operator"> operator</label><br>
+      
+          <div>
           <input type="text" id = "searchform" name="name"  placeholder="Search"><button type="submit" class="btn btn-danger ">Search</button></a> 
             
      
