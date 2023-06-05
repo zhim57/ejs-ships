@@ -649,6 +649,13 @@ pre code {
     padding-left: 15px;
     width: 100%
 }
+.containerJa {
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 3px;
+    padding-left: 3px;
+    width: 100%
+}
 
 @media (min-width:576px) {
     .container {

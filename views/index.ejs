@@ -1,6 +1,6 @@
 <%- include('partials/header') -%>
 
-  <div class="container">
+  <div class="containerJa">
     <%- include('partials/messages') -%>
 
       <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -12,8 +12,9 @@
             <th>ism Man</th>
             <th>imo</th>
             <th>operator</th>
-            <th>Sent on</th>
             <th>Db-></th>
+            <th>Sent on</th>
+            <th>Delete</th>
           </tr>
         </thead>
 
@@ -51,14 +52,22 @@
               <!-- <td>
             <a class="btn btn-primary" href="/edit/<%= ship.id %>">Edit</a>
           </td> -->
+          <td>
+            <form action="/updatefrombig/<%= ship.imo %>?_method=PUT" method="POST">
+              <input type="hidden" name="_method" value="PUT">
+              <button type="submit" class="btn btn-primary btn-block mt-3">Db</button>
+            </form>
+          </td>
               <td>
                 <%= (ship.o_sent || "n/a").slice(0,11) %>
               </td>
               <td>
-                <form action="/updatefrombig/<%= ship.imo %>?_method=PUT" method="POST">
-                  <input type="hidden" name="_method" value="PUT">
-                  <button type="submit" class="btn btn-primary btn-block mt-3">Big Db</button>
-                </form>
+                <form  action="/delete/<%= ship.id %>?_method=DELETE" method="POST">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <button type="submit" class="btn btn-danger btn-block mt-3">
+                      Delete
+                  </button>
+              </form>
               </td>
             </tr>
             <% }) %>

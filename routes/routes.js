@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer");
 const createEmail = require("../lib/createemail.js");
 const Db_ship = require("../models/db_ship.js");
 const Db_ship_big = require("../models/db_ship_big.js");
+const updateFromBigDb = require("../modules/updatefrombigdb.js");
 const Cryptr = require("cryptr");
 const cryptr = new Cryptr(process.env.SECRET, {
   pbkdf2Iterations: Number(process.env.PBKDF2),
@@ -59,6 +60,8 @@ Db_ship.find(searchQuery)
  .then((ships) => {
    ships.forEach((ship) => {
      ship.remarks = cryptr.decrypt(ship.remarks);
+     if (ship.v_type ===""|| ship.v_type ==="NT")
+     updateFromBigDb(ship.imo);
    });
    req.flash(
      "success_msg",
@@ -393,11 +396,15 @@ router.post("/api/addOneNewVessel/", (req, res) => {
 console.log(newObj);
 let searchQuery2 = {callSign: req.body.callSign }
 Db_ship_big.find(searchQuery2).then(vessel1 =>{
-
+  
   if (vessel1[0]){
+    console.log("vessel found in big DB");
+
+
     let vessel = vessel1[0]; 
 newObj ={
   date: vessel.date,
+  name: vessel.name,
   Tonnage:vessel.Tonnage,
   arrCountry:vessel.arrCountry,
   arrPort:vessel.arrPort,
@@ -513,107 +520,14 @@ router.put("/edit/:id", (req, res) => {
     });
 });
 router.put("/updatefrombig/:imo", (req, res) => {
-  let searchQuery1 = { imo: req.params.imo };
+  let imo= req.params.imo ;
+  updateFromBigDb(imo);
 
-  Db_ship_big.find(searchQuery1)
-    .then((vessel1) => {
-
-      if (vessel1 ){
-
-        let vessel=vessel1[0];
-   
-         console.log(vessel.v_type);
-         let updateObject = {
-           date: vessel.date,
-           beneficialOwnerId: vessel.beneficialOwnerId,
-           beneficialOwnerName: vessel.beneficialOwnerName,
-           bestContactId: vessel.bestContactId,
-           bestContactName: vessel.bestContactName,
-           callSign: vessel.callSign,
-           commercialOperatorId: vessel.commercialOperatorId,
-           commercialOperatorName: vessel.commercialOperatorName,
-           ismManagerId: vessel.ismManagerId,
-           ismManagerName: vessel.ismManagerName,
-           name: vessel.name,
-           imo: vessel.imo,
-           nominalOwnerId: vessel.nominalOwnerId,
-           nominalOwnerName: vessel.nominalOwnerName,
-           operator: vessel.operator || vessel.ismManagername,
-           registeredOwnerId: vessel.registeredOwnerId,
-           registeredOwnerName: vessel.registeredOwnerName,
-           technicalManagerId: vessel.technicalManagerId,
-           technicalManagerName: vessel.technicalManagerName,
-           thirdPartyOperatorId: vessel.thirdPartyOperatorId,
-           thirdPartyOperatorName: vessel.thirdPartyOperatorName,
-           v_description: vessel.v_description,
-           v_type: vessel.v_type,
-           vesselFlag: vessel.vesselFlag,
-         };
-   
-         let searchQuery = { imo: vessel.imo };
-   
-         Db_ship.updateOne(searchQuery, {
-           $set: {
-             date: vessel.date,
-             beneficialOwnerId: vessel.beneficialOwnerId,
-             beneficialOwnerName: vessel.beneficialOwnerName,
-             bestContactId: vessel.bestContactId,
-             bestContactName: vessel.bestContactName,
-             callSign: vessel.callSign,
-             commercialOperatorId: vessel.commercialOperatorId,
-             commercialOperatorName: vessel.commercialOperatorName,
-             ismManagerId: vessel.ismManagerId,
-             ismManagerName: vessel.ismManagerName,
-             name: vessel.name,
-             imo: vessel.imo,
-             nominalOwnerId: vessel.nominalOwnerId,
-             nominalOwnerName: vessel.nominalOwnerName,
-             operator: updateObject.operator,
-             registeredOwnerId: vessel.registeredOwnerId,
-             registeredOwnerName: vessel.registeredOwnerName,
-             technicalManagerId: vessel.technicalManagerId,
-             technicalManagerName: vessel.technicalManagerName,
-             thirdPartyOperatorId: vessel.thirdPartyOperatorId,
-             thirdPartyOperatorName: vessel.thirdPartyOperatorName,
-             v_description: vessel.v_description,
-             v_type: vessel.v_type,
-             vesselFlag: vessel.vesselFlag,
-           },
-         })
-           .then((updated) => {
-             req.flash(
-               "success_msg",
-               "Vessel updated successfully." + updateObject.name +"  -" + updateObject.v_type
-             );
-             console.log("updated the db");
-             res.redirect("/" );
-            })
-            .catch((err) => {
-              req.flash("error_msg", "ERROR: " + err);
-              res.redirect("/");
-            });
-          }
-          else {
-            req.flash(
-              "success_msg",
-              "Vessel not in big db." + updateObject.name
-            );
-             consle.log("vessel not in big db");
-            res.redirect("/");
-          }
-
-      // req.flash("success_msg", "Vessels email address updated successfully.");
-      // res.redirect("/");
-    })
-    .catch((err) => {
-      req.flash("error_msg", "ERROR: " + err);
-      res.redirect("/");
-    });
 });
 
-//put routes ends here
+// //put routes ends here
 
-// DELETE routes start here
+// // DELETE routes start here
 router.delete("/delete/:id", function (req, res) {
   let id = req.params.id;
   let searchQuery = { _id: id };
